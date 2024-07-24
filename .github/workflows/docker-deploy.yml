@@ -55,7 +55,7 @@ jobs:
     - name: Copying the hardhat files to the container
       run: |
         docker exec go-ethereum mkdir -p /workspace
-        docker cp ${{ github.workspace }} go-ethereum:/workspace
+        docker cp ${{ github.workspace }} /workspace
         docker exec go-ethereum ls -larth
           
     - name: Installing the required Node.js and npm
