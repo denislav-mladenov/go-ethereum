@@ -51,7 +51,6 @@ jobs:
           --ws.port 8546 \
           --ws.origins "*" \
           --ws.api personal,db,eth,net,web3
-
     - name: Copying the hardhat files to the container
       run: |
         docker exec go-ethereum mkdir -p /workspace
@@ -60,28 +59,27 @@ jobs:
         docker exec go-ethereum ls -larth /workspace
         docker exec go-ethereum ls -larth /workspace/go-ethereum
         docker exec go-ethereum ls -larth /workspace/go-ethereum/hardhat
-
     - name: Installing the required Node.js and npm
       run: |
         docker exec go-ethereum apk add --no-cache nodejs npm
-
     - name: Installation of hardhat
       run: docker exec go-ethereum sh -c "cd /workspace/go-ethereum/hardhat && npm install --save-dev --force @nomicfoundation/hardhat-chai-matchers@^2.0.0 @nomicfoundation/hardhat-ethers@^3.0.0 @nomicfoundation/hardhat-ignition-ethers@^0.15.0 @nomicfoundation/hardhat-network-helpers@^1.0.0 @nomicfoundation/hardhat-verify@^2.0.0 @typechain/ethers-v6@^0.5.0 @typechain/hardhat@^9.0.0 @types/chai@^4.2.0 @types/mocha@>=9.1.0 hardhat-gas-reporter@^1.0.8 solidity-coverage@^0.8.1 ts-node@>=8.0.0 typechain@^8.3.0 typescript@>=4.5.0"
 
     - name: Checking the hardhat version to verify that its working properly
       run: docker exec go-ethereum npx hardhat --version
-
-    - name: Deploy hardhat sample project
-      run: docker exec go-ethereum sh -c "cd /workspace/go-ethereum/hardhat && yes y | npx hardhat ignition deploy ./ignition/modules/Token.js --network devnet"
+	  
+	- name: Compiling contracts  
+	  run: docker exec go-ethereum sh -c "cd /workspace/go-ethereum/hardhat && npx hardhat compile"
 
     - name: Testing contracts
       run: docker exec go-ethereum sh -c "cd /workspace/go-ethereum/hardhat && npx hardhat test"
+	
+	- name: Deploy hardhat sample project
+      run: docker exec go-ethereum sh -c "cd /workspace/go-ethereum/hardhat && yes y | npx hardhat ignition deploy ./ignition/modules/Token.js --network devnet"
 
     - name: Build a new docker image
       run: |
         docker commit go-ethereum go-eth-hardhat:latest
         docker tag go-eth-hardhat:latest ${{ env.REGISTRY }}/${{ github.repository_owner }}/go-eth-hardhat:latest
-
     - name: Push new image to ghcr.io
       run: docker push ${{ env.REGISTRY }}/${{ github.repository_owner }}/go-eth-hardhat:latest
-
