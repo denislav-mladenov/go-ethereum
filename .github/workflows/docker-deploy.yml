@@ -57,7 +57,7 @@ jobs:
         docker cp ${{ github.workspace }}/hardhat go-ethereum:/workspace
         docker exec go-ethereum ls -larth /workspace
         docker exec go-ethereum ls -larth /workspace/hardhat
-          i
+          
     - name: Installing the required Node.js and npm
       run: |
         docker exec go-ethereum apk add --no-cache nodejs npm
