@@ -56,31 +56,25 @@ jobs:
         docker exec go-ethereum mkdir -p /workspace/hardhat
         docker cp ${{ github.workspace }}/hardhat go-ethereum:/workspace
         docker exec go-ethereum ls -larth /workspace
-        docker exec go-ethereum ls -larth /workspace/hardhat
+        docker exec go-ethereum ls -larth /workspace/go-ethereum/hardhat
           
     - name: Installing the required Node.js and npm
       run: |
         docker exec go-ethereum apk add --no-cache nodejs npm
     - name: Installation of hardhat
-<<<<<<< HEAD
       run: docker exec go-ethereum sh -c "cd /workspace/hardhat && npm install --save-dev hardhat --legacy-peer-deps"
     
-=======
       run: docker exec go-ethereum sh -c "cd /workspace/hardhat && npm install --save-dev hardhat"
 
->>>>>>> 8f1410dd4c52d6fadba1a0afa9e33dc0edae0251
     - name: Checking the hardhat version to verify that its working properly
       run: docker exec go-ethereum npx hardhat --version
 
     - name: Deploy hardhat sample project
-<<<<<<< HEAD
       run: docker exec go-ethereum sh -c "cd /workspace/hardhat && npx hardhat ignition deploy ./ignition/modules/Token.js --network devnet"
 
-=======
       run: |
         docker exec go-ethereum ls -larth /workspace/hardhat/ignition/modules      
         docker exec go-ethereum sh -c "cd /workspace/hardhat &&  npx hardhat ignition deploy ./ignition/modules/Token.js --network devnet"
->>>>>>> 8f1410dd4c52d6fadba1a0afa9e33dc0edae0251
     - name: Testing contracts
       run: |
         docker exec go-ethereum sh -c "cd /workspace/hardhat && npx hardhat test"
